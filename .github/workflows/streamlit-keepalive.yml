@@ -1,0 +1,45 @@
+name: Keep Streamlit app awake
+
+on:
+  schedule:
+    # Every 6 hours. Streamlit suspends apps after ~12h without traffic, so
+    # this leaves room for GitHub to delay or drop a run without the app
+    # actually sleeping.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+# A slow cold boot shouldn't overlap with the next scheduled run.
+concurrency:
+  group: streamlit-keepalive
+  cancel-in-progress: false
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r keepalive/requirements.txt
+
+      - name: Wake the app
+        env:
+          # Unset repository variables expand to an empty string; the script
+          # falls back to its built-in default URL in that case.
+          STREAMLIT_APP_URL: ${{ vars.STREAMLIT_APP_URL }}
+        run: python keepalive/keepalive.py
+
+      - name: Upload screenshot
+        # Only produced when the app failed to come up.
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshot
+          path: screenshot.png
+          if-no-files-found: ignore
