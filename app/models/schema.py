@@ -95,7 +95,7 @@ class VideoParams(BaseModel):
       "video_aspect": "横屏 16:9（西瓜视频）",
       "voice_name": "女生-晓晓",
       "bgm_name": "random",
-      "font_name": "STHeitiMedium 黑体-中",
+      "font_name": "MicrosoftYaHeiBold 微软雅黑-粗",
       "text_color": "#FFFFFF",
       "font_size": 60,
       "stroke_color": "#000000",
@@ -149,7 +149,7 @@ class VideoParams(BaseModel):
     custom_position: float = Field(
         default=config.ui.get("custom_position", 70.0), ge=0, le=100, allow_inf_nan=False
     )
-    font_name: Optional[str] = "STHeitiMedium.ttc"
+    font_name: Optional[str] = "MicrosoftYaHeiBold.ttc"
     text_fore_color: Optional[str] = "#FFFFFF"
     text_background_color: Union[bool, str] = False
     rounded_subtitle_background: bool = False
@@ -179,7 +179,7 @@ class SubtitleRequest(BaseModel):
     subtitle_animation: SubtitleAnimation = _get_valid_ui_choice(
         "subtitle_animation", _SUBTITLE_ANIMATIONS, "none"
     )
-    font_name: Optional[str] = "STHeitiMedium.ttc"
+    font_name: Optional[str] = "MicrosoftYaHeiBold.ttc"
     text_fore_color: Optional[str] = "#FFFFFF"
     text_background_color: Union[bool, str] = False
     rounded_subtitle_background: bool = False
